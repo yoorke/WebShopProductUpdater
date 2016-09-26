@@ -28,10 +28,12 @@ namespace WebShopProductUpdater
                 {
                     log("Obrađujem XML podatke...");
                     XmlNodeList nodeList = data.DocumentElement.SelectNodes("webdata");
+                    int total = nodeList.Count;
+                    int i = 0;
                     foreach (XmlNode xmlNode in nodeList)
                     { 
                         //XmlNode xmlNode = nodeList[0];
-                        updateProduct(xmlNode.SelectSingleNode("barcode").InnerText, xmlNode.SelectSingleNode("naziv") != null ? xmlNode.SelectSingleNode("naziv").InnerText : "none", xmlNode.SelectSingleNode("kol") != null ? xmlNode.SelectSingleNode("kol").InnerText : "-1", xmlNode.SelectSingleNode("pcena").InnerText);
+                        updateProduct(xmlNode.SelectSingleNode("barcode").InnerText, xmlNode.SelectSingleNode("naziv") != null ? xmlNode.SelectSingleNode("naziv").InnerText : "none", xmlNode.SelectSingleNode("kol") != null ? xmlNode.SelectSingleNode("kol").InnerText : "-1", xmlNode.SelectSingleNode("pcena").InnerText, total, i++);
                     }
                 }
             }
@@ -83,11 +85,11 @@ namespace WebShopProductUpdater
                 
         //}
 
-        private static void updateProduct(string barcode, string name, string quantity, string price)
+        private static void updateProduct(string barcode, string name, string quantity, string price, int total, int i)
         {
             try
             {
-                log("Šaljem podatke za artikal " + barcode);
+                log("Šaljem podatke za artikal " + barcode + " (" + i.ToString() + "/" + total.ToString() + ")");
                 var request = (HttpWebRequest)WebRequest.Create(ConfigurationManager.AppSettings["webUrl"]);
                 //var request = (HttpWebRequest)WebRequest.Create("http://localhost:63480/api/product");
                 var postData = "barcode=" + barcode;
